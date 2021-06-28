@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "start": "cross-env NODE_ENV=production snowpack dev --reload",
     "build": "cross-env NODE_ENV=production snowpack build",
@@ -7,8 +7,8 @@
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "prettier --check \"src/**/*.{js,jsx}\"",
     "tag:docker:dev": "cross-env-shell GIT_COMMIT_HASH=$(git show --no-patch --format=%h) \"npm-run-all build:docker:dev push:docker:dev\"",
-    "build:docker:dev": "cross-var docker build . -t registry.gitlab.com/rayprosoft/turnkey-gaming-system/mocksite:$npm_package_version-$GIT_COMMIT_HASH",
-    "push:docker:dev": "docker push registry.gitlab.com/rayprosoft/turnkey-gaming-system/mocksite:$npm_package_version-$GIT_COMMIT_HASH"
+    "build:docker:dev": "cross-var docker build . -t registry.gitlab.com/rayprosoft/tgs-website-mocksite:$npm_package_version-$GIT_COMMIT_HASH",
+    "push:docker:dev": "docker push registry.gitlab.com/rayprosoft/tgs-website-mocksite:$npm_package_version-$GIT_COMMIT_HASH"
   },
   "dependencies": {
     "react": "^16.13.1",

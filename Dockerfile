@@ -3,13 +3,13 @@ FROM node:14.17.0-stretch-slim AS build
 WORKDIR /dest
 
 # Copy package.json and package-lock.json
-COPY ./src/Web/mocksite/package* ./
+COPY ./package* .
 
 # Install packages
 RUN npm install
 
 # Copy source code
-COPY ./src/Web/mocksite/ .
+COPY . .
 
 # TODO: RUN npm run test
 RUN npm run build

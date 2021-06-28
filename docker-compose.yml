@@ -1,0 +1,124 @@
+version: "3.8"
+
+services:
+  reverse-proxy:
+    image: traefik:v2.4
+    command: --api.insecure=true --providers.docker
+    ports:
+      # The HTTP port
+      - 80:80
+      # The Web UI http://localhost:9090/dashboard#/ (enabled by --api.insecure=true)
+      - 9090:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  mocksite:
+    build: .
+    image: mocksite
+    container_name: mocksite
+    labels:
+      - traefik.http.routers.mocksite.rule=Host(`mocksite.localhost`)
+    depends_on:
+      - global-api
+
+  global-api:
+    image: global-api
+    container_name: global-api
+    labels:
+      - traefik.http.routers.global-api.rule=Host(`mocksite.localhost`) && PathPrefix(`/global-api`)
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+    # For crash debug
+    # entrypoint: ["sh", "-c", "sleep infinity"]
+    ports:
+      - 32666:80
+    depends_on:
+      - operator-api
+      - postgres
+
+  operator-api:
+    image: operator-api
+    container_name: operator-api
+    labels:
+      - traefik.http.routers.operator-api.rule=Host(`mocksite.localhost`) && PathPrefix(`/api`)
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      Operator__FileServiceBaseUrl: "http://fileservice"
+      Promotion__Url: "http://promotion-api"
+    # For crash debug
+    # entrypoint: ["sh", "-c", "sleep infinity"]
+    ports:
+      - 32670:80
+    depends_on:
+      - fileservice
+      - postgres
+      - redis
+      
+  fileservice:
+    image: fileservice
+    container_name: fileservice
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:4.2.0
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "1qaz2wsx!@"
+    volumes:
+      - ./.docker/mongodb/db:/data/db
+      - ./.docker/mongodb/config:/etc/mongod.conf
+      - ./.docker/mongodb/log:/var/log/mongodb/
+
+  promotion-api:
+    image: promotion-api
+    container_name: promotion-api
+    environment:
+      ConnectionStrings__Tgs: "Server=postgres;Database=tgs;User Id=tgs;Password=1qaz2wsx!@"
+      ConnectionStrings__RedisConfigurationString: "redis,abortConnect=false,connectTimeout=3000"
+      NatsSetting__Urls: "nats://nats:4222"
+      File__FileServiceBaseUrl: "http://fileservice"
+    depends_on:
+      - postgres
+
+  log-api:
+    image: log-api
+    container_name: log-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+    depends_on:
+      - postgres
+      - nats
+      - redis
+
+  nats:
+    image: nats
+    container_name: nats
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+    expose:
+      - "4222"
+    ports:
+      - "8222:8222"
+      - 4222:4222
+
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:13.2-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: "tgs"
+      POSTGRES_PASSWORD: "1qaz2wsx!@"
+      PGDATA: /data/postgres
+    volumes:
+      - ./.docker/postgres:/data/postgres
+    ports:
+      - "5432:5432"
