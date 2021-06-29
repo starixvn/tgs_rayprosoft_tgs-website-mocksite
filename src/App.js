@@ -13,8 +13,6 @@ import Sidebar from "./Sidebar"
 import useSWR, { cache } from "swr"
 import BrandPage from "./brand/Page"
 
-console.log("TODO: version")
-
 function App() {
   let { url, path } = useRouteMatch()
   //TODO: remove defaultIsVisible={false}
