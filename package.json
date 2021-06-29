@@ -1,14 +1,19 @@
 {
+  "name": "mocksite",
   "version": "1.0.0",
+  "registry": "registry.gitlab.com/rayprosoft/turnkey-gaming-system",
   "scripts": {
     "start": "cross-env NODE_ENV=production snowpack dev --reload",
     "build": "cross-env NODE_ENV=production snowpack build",
+    "build:docker": "cross-var docker build . -t $npm_package_registry/$npm_package_name:$npm_package_version",
+    "push:docker": "cross-var docker push $npm_package_registry/$npm_package_name:$npm_package_version",
+    "deploy:k8s": "kubectl set image deployment/$npm_package_name $npm_package_name=$npm_package_registry/$npm_package_name:$npm_package_version --record -n=$ENV",
     "test": "web-test-runner \"src/**/*.test.jsx\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "prettier --check \"src/**/*.{js,jsx}\"",
     "tag:docker:dev": "cross-env-shell GIT_COMMIT_HASH=$(git show --no-patch --format=%h) \"npm-run-all build:docker:dev push:docker:dev\"",
-    "build:docker:dev": "cross-var docker build . -t registry.gitlab.com/rayprosoft/tgs-website-mocksite:$npm_package_version-$GIT_COMMIT_HASH",
-    "push:docker:dev": "docker push registry.gitlab.com/rayprosoft/tgs-website-mocksite:$npm_package_version-$GIT_COMMIT_HASH"
+    "build:docker:dev": "cross-var docker build . -t $$npm_package_registry/$npm_package_name:$npm_package_version-$GIT_COMMIT_HASH",
+    "push:docker:dev": "docker push $$npm_package_registry/$npm_package_name:$npm_package_version-$GIT_COMMIT_HASH"
   },
   "dependencies": {
     "react": "^16.13.1",
@@ -26,7 +31,7 @@
     "@snowpack/web-test-runner-plugin": "^0.2.2",
     "@testing-library/react": "^11.2.5",
     "@web/test-runner": "^0.12.17",
-    "bumbag": "2.0.4",
+    "bumbag": "2.0.6",
     "chai": "^4.3.4",
     "clone-deep": "^4.0.1",
     "cross-env": "^7.0.3",
@@ -38,7 +43,7 @@
     "react-dropzone": "^11.3.2",
     "react-hook-form": "^6.15.5",
     "react-router-dom": "^5.2.0",
-    "snowpack": "^3.5.4",
+    "snowpack": "^3.6.2",
     "swr": "^0.5.6"
   }
 }
