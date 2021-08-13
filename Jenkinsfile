@@ -23,7 +23,6 @@ pipeline {
             steps {	  			    
                 sh "sudo docker build -t ${Registry}${Image}:${TAG} ."
                 sh "sudo docker build -t ${Registry}${Image}:dev ."
-				message += "\nTag: ${TAG}"
             }
         }			
         stage('Docker Push') {   
@@ -34,7 +33,8 @@ pipeline {
         }	
         stage('Dev Deployment') {   
             steps {	  
-                script {			
+                script {
+					message += "\nTag: ${TAG}"				
                     withKubeConfig([credentialsId: 'k8s-kube-config']) {
 						sh "kubectl set image deployment/${Image} ${Image}=${Registry}${Image}:${TAG} --record -n dev"
                     }
