@@ -34,9 +34,11 @@ pipeline {
         stage('Dev Deployment') {   
             steps {	  
                 script {
-					message += "\nTag: ${TAG}"				
+                    env.commit_url = "${env.GIT_URL}".replace(".git","/-/commit/") + "${env.GIT_COMMIT}"
+					message += "\nTag: ${TAG}"
+                    message += "\n Commit: ${env.commit_url}"
                     withKubeConfig([credentialsId: 'k8s-kube-config']) {
-						sh "kubectl set image deployment/${Image} ${Image}=${Registry}${Image}:${TAG} --record -n dev"
+                        sh "kubectl set image deployment/${Image} ${Image}=${Registry}${Image}:${TAG} --record -n dev"
                     }
                 }
             }
@@ -45,7 +47,7 @@ pipeline {
             steps {	  
                 script {			
                     withKubeConfig([credentialsId: 'stag-k8s-config']) {
-						sh "kubectl set image deployment/${Image} ${Image}=${Registry}${Image}:${TAG} --record -n staging"
+                        sh "kubectl set image deployment/${Image} ${Image}=${Registry}${Image}:${TAG} --record -n staging"
                     }
                 }
             }
@@ -54,7 +56,7 @@ pipeline {
             steps {	  
                 script {			
                     withKubeConfig([credentialsId: 'stag-k8s-config']) {
-						sh "kubectl set image deployment/${Image} ${Image}=${Registry}${Image}:${TAG} --record -n prod"
+                        sh "kubectl set image deployment/${Image} ${Image}=${Registry}${Image}:${TAG} --record -n prod"
                     }
                 }
             }
