@@ -4,6 +4,8 @@ export const EUR = "EUR"
 
 export const GBP = "GBP"
 
+export const HKD = "HKD"
+
 export const IDR = "IDR"
 
 export const IDR1000 = "IDR_1000"
@@ -27,18 +29,19 @@ export const VND = "VND"
 export const VND1000 = "VND_1000"
 
 export const currencyList = () => [
-    CNY,
-    EUR,
-    GBP,
-    IDR,
-    IDR1000,
-    INR,
-    JPY,
-    KRW,
-    MYR,
-    SGD,
-    THB,
-    USD,
-    VND,
-    VND1000
+  CNY,
+  EUR,
+  GBP,
+  HKD,
+  IDR,
+  IDR1000,
+  INR,
+  JPY,
+  KRW,
+  MYR,
+  SGD,
+  THB,
+  USD,
+  VND,
+  VND1000
 ]
