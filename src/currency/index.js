@@ -18,6 +18,8 @@ export const KRW = "KRW"
 
 export const MYR = "MYR"
 
+export const PHP = "PHP"
+
 export const SGD = "SGD"
 
 export const THB = "THB"
@@ -39,6 +41,7 @@ export const currencyList = () => [
   JPY,
   KRW,
   MYR,
+  PHP,
   SGD,
   THB,
   USD,
