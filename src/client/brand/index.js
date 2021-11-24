@@ -2,14 +2,64 @@ import useSWR, { cache } from "swr"
 import { toDataOrError } from "../response"
 import { handleError } from "../Error"
 
+const useInternalBrandToken = (brandCode) => {
+  let keys = brandCode ? `/global-api/brand/token/${brandCode}` : undefined
+
+  const ResultCacheKey = `${useInternalBrandToken.name}:${brandCode}`
+  let cached = cache.get(ResultCacheKey)
+  let { data, mutate, ...rest } = useSWR(
+    keys,
+    (url) => {
+      try {
+        return fetch(url)
+          .then(toDataOrError)
+          .then((result) => {
+            cache.set(ResultCacheKey, result)
+            return result
+          })
+      } catch (error) {
+        console.error(error)
+        return Promise.reject(error)
+      }
+    },
+    {
+      initialData: keys && cached ? cached : undefined
+    }
+  )
+
+  return {
+    data,
+    mutate: (data, shouldRevalidate) => {
+      cache.delete(keys)
+      cache.delete(ResultCacheKey)
+      mutate(data, shouldRevalidate)
+    },
+    deleteCache: () => {
+      cache.delete(keys)
+      cache.delete(ResultCacheKey)
+    },
+    clearCache: () => cache.clear(),
+    ...rest
+  }
+}
+
 export const useBrandToken = ({ brandCode, currency }) => {
+  let { data, ...rest } = useInternalBrandToken(brandCode)
+
+  return {
+    token: data,
+    ...rest
+  }
+}
+/*{
   let apiKey = useApiKey(brandCode)
+  let { data: internalBrandToken } = useInternalBrandToken(brandCode)
   let keys =
-    brandCode && currency && apiKey
-      ? ["/api/auth/jwt", brandCode, currency]
+    brandCode && currency && apiKey && internalBrandToken
+      ? ["/api/auth/jwt", brandCode, currency, internalBrandToken]
       : undefined
 
-  const ResultCacheKey = `${useBrandToken.name}:${brandCode}:${currency}`
+  const ResultCacheKey = `${useBrandToken.name}:${brandCode}:${currency}:${internalBrandToken}`
   let cached = cache.get(ResultCacheKey)
   let { data, mutate, ...rest } = useSWR(
     keys,
@@ -17,7 +67,8 @@ export const useBrandToken = ({ brandCode, currency }) => {
       fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${internalBrandToken}`
         },
         body: JSON.stringify({
           client: apiKey,
@@ -50,6 +101,7 @@ export const useBrandToken = ({ brandCode, currency }) => {
     ...rest
   }
 }
+*/
 
 const useApiKey = (code) => {
   let brands = useBrands()
@@ -57,7 +109,6 @@ const useApiKey = (code) => {
 }
 
 export const useBrands = () => {
-  //TODO: paging required?
   let url = `/global-api/brand/apikeys?showAll=true`
 
   const CacheKey = url
@@ -93,7 +144,7 @@ export const useBrandAnnouncementList = ({ brandCode, currency }) => {
     fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${brandToken}`
+        "brand-token": brandToken
       }
     })
       .then(toDataOrError)
