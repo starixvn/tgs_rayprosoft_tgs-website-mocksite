@@ -30,4 +30,4 @@ COPY --from=build /dest/build /usr/share/caddy
 # Start caddy server
 # CMD caddy run --config /etc/caddy/Caddyfile
 # ENTRYPOINT ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
-# EXPOSE 80
+# EXPOSE 5000

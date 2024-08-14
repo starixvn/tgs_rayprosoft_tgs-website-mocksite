@@ -1,7 +1,7 @@
 const httpProxy = require("http-proxy")
-const apiProxy = httpProxy.createServer({ target: "http://localhost:32670" })
+const apiProxy = httpProxy.createServer({ target: "http://m2-operator-api-local-service:5000", secure: false })
 const globalApiProxy = httpProxy.createServer({
-    target: "http://localhost:32666"
+    target: "http://m2-global-api-local-service:5000", secure: false, changeOrigin: true
 })
 
 module.exports = {
