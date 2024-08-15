@@ -22,18 +22,18 @@ module.exports = {
         metaUrlPath: "snowpack"
     },
     routes: [
-        {
-            src: "/api/.*",
-            dest: (req, res) => {
-                return apiProxy.web(req, res)
-            }
-        },
-        {
-            src: "/global-api/.*",
-            dest: (req, res) => {
-                return globalApiProxy.web(req, res)
-            }
-        },
+        // {
+        //     src: "/api/.*",
+        //     dest: (req, res) => {
+        //         return apiProxy.web(req, res)
+        //     }
+        // },
+        // {
+        //     src: "/global-api/.*",
+        //     dest: (req, res) => {
+        //         return globalApiProxy.web(req, res)
+        //     }
+        // },
         { match: "routes", src: ".*", dest: "/index.html" }
     ]
 }

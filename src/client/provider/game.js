@@ -3,6 +3,7 @@ import { toDataOrError } from "../response"
 import { useBrandToken } from "../brand"
 import { usePlayerToken } from "../brand/player"
 import { handleError } from "../Error"
+import { useFetch } from "../request"
 
 export const useGameUrl = (
   { brandCode, username, currency, platformtype },
@@ -33,7 +34,7 @@ export const useGameUrl = (
       : undefined
 
   let { data: result, ...rest } = useSWR(keys, (url) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -5,6 +5,7 @@ import { intValue as playerTypeIntValue } from "../../brand/player/PlayerType"
 import { fromInt } from "../../brand/player/PlayerStatus"
 import { handleError } from "../Error"
 import { DefaultSettings as PaginationDefaultSettings } from "../pagination"
+import { useFetch } from "../request"
 
 export const useBrandPlayerList = (formData) => {
   let page = formData?.page ?? PaginationDefaultSettings?.page
@@ -18,7 +19,7 @@ export const useBrandPlayerList = (formData) => {
       )}&page=${page}&rows=${rows}&showAll=false`
     : undefined
   let { data: result, error, ...rest } = useSWR(keys, (url) =>
-    fetch(url)
+    useFetch(url)
       .then(toDataOrError)
       .then((data) => ({
         ...data,
@@ -49,7 +50,7 @@ export const useCreatePlayer = ({ brandCode, currency }, formData) => {
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url, formData) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +87,7 @@ export const useCheckPlayerUsername = ({ brandCode, currency }, userName) => {
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url, formData) => {
-    return fetch(url, {
+    return useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken
@@ -169,7 +170,7 @@ export const usePlayerToken = (
   let { data: result, error, mutate, ...rest } = useSWR(
     keys,
     (url, brandCode, username, body) => {
-      return fetch(url, {
+      return useFetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -234,7 +235,7 @@ export const useLogout = (
     deletePlayerTokenCache({ brandCode, currency, username, platformtype })
   }
   let { data: result, ...rest } = useSWR(keys, (url, brandToken, playerToken) =>
-    fetch(url, {
+    useFetch(url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -265,7 +266,7 @@ export const useCaptcha = ({ brandCode, currency }) => {
   let keys = brandToken ? [`/api/player/captcha`, brandCode] : undefined
 
   let { data = {}, ...rest } = useSWR(keys, (url, brandCode) =>
-    fetch(url, {
+    useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken
@@ -304,7 +305,7 @@ export const usePlayerInfo = ({
       : undefined
 
   let { data, ...rest } = useSWR(keys, (url, brandCode, currency, username) => {
-    return fetch(url, {
+    return useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken,
@@ -344,7 +345,7 @@ export const useUpdatePlayerInfo = (
   let { data: result, error, ...rest } = useSWR(
     keys,
     (url, brandCode, currency, username, formData) => {
-      return fetch(url, {
+      return useFetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -394,7 +395,7 @@ export const useChangePlayerPassword = (
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url, formData) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -443,7 +444,7 @@ export const useInitPlayerPayPassword = (
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url, formData) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -487,7 +488,7 @@ export const usePaymentList = ({
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url) => {
-    return fetch(url, {
+    return useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken,
@@ -542,7 +543,7 @@ export const useApplyDeposit = (
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url, formData) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -591,7 +592,7 @@ export const useUploadDepositProof = (
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url, formData) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "POST",
       headers: {
         "brand-token": brandToken,
@@ -634,7 +635,7 @@ export const useBankInfoList = ({
       : undefined
 
   let { data, error, ...rest } = useSWR(keys, (url) => {
-    return fetch(url, {
+    return useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken,
@@ -674,7 +675,7 @@ export const useAddBankInfo = (
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url, formData) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -722,7 +723,7 @@ export const useDeleteBankInfo = (
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -765,7 +766,7 @@ export const useWithdrawList = ({
       : undefined
 
   let { data, error, ...rest } = useSWR(keys, (url) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -806,7 +807,7 @@ export const useApplyWithdraw = (
       : undefined
 
   let { data: result, error, ...rest } = useSWR(keys, (url, formData) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -850,7 +851,7 @@ export const usePromotionList = ({
       : undefined
 
   let { data, error, ...rest } = useSWR(keys, (url) => {
-    return fetch(url, {
+    return useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken,
@@ -897,7 +898,7 @@ export const useJoinPromotion = (
       : undefined
 
   let { data, error, ...rest } = useSWR(keys, (url) => {
-    return fetch(url, {
+    return useFetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

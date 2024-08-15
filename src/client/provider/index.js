@@ -5,6 +5,7 @@ import { usePlayerToken } from "../brand/player"
 import { toValue as toPlatformType } from "../../platform"
 import { gameStatusFromInt } from "../../game/GameStatus"
 import { handleError } from "../Error"
+import { useFetch } from "../request"
 
 export const useGameProviderList = (
   { brandCode, username, currency, platformtype } = {},
@@ -35,7 +36,7 @@ export const useGameProviderList = (
       : undefined
 
   let { data = {}, ...rest } = useSWR(keys, (url, brandCode, username) => {
-    return fetch(url, {
+    return useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken,
@@ -82,7 +83,7 @@ export const useGameList = (
       : undefined
 
   let { data = {}, ...rest } = useSWR(keys, (url, brandToken, playerToken) => {
-    return fetch(url, {
+    return useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken,

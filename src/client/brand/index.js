@@ -1,6 +1,7 @@
 import useSWR, { cache } from "swr"
 import { toDataOrError } from "../response"
 import { handleError } from "../Error"
+import { useFetch } from "../request"
 
 const useInternalBrandToken = (brandCode) => {
   let keys = brandCode ? `/global-api/brand/token/${brandCode}` : undefined
@@ -11,7 +12,7 @@ const useInternalBrandToken = (brandCode) => {
     keys,
     (url) => {
       try {
-        return fetch(url)
+        return useFetch(url)
           .then(toDataOrError)
           .then((result) => {
             cache.set(ResultCacheKey, result)
@@ -117,7 +118,7 @@ export const useBrands = () => {
   let { data } = useSWR(
     url,
     (url) =>
-      fetch(url)
+      useFetch(url)
         .then(toDataOrError)
         .then((data) => {
           let brands = data?.items
@@ -141,7 +142,7 @@ export const useBrandAnnouncementList = ({ brandCode, currency }) => {
       ? [`/api/announcement/list`, brandCode, currency]
       : undefined
   let { data: result, error, ...rest } = useSWR(keys, (url) =>
-    fetch(url, {
+    useFetch(url, {
       headers: {
         "Content-Type": "application/json",
         "brand-token": brandToken
