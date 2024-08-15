@@ -12,7 +12,7 @@ import {
 } from "react-router-dom"
 import { useBrands } from "./client/brand"
 
-const DefaultBrandCode = "TGS"
+const DefaultBrandCode = "M2_DEMO"
 
 const Sidebar = () => {
   let brands = useBrands()

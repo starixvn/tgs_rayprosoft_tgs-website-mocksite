@@ -1,7 +1,7 @@
 const httpProxy = require("http-proxy")
-const apiProxy = httpProxy.createServer({ target: "http://m2-operator-api-local-service:5000", secure: false })
+const apiProxy = httpProxy.createServer({ target: "https://op-api.nexentgame.com", secure: false, changeOrigin: true })
 const globalApiProxy = httpProxy.createServer({
-    target: "http://m2-global-api-local-service:5000", secure: false, changeOrigin: true
+    target: "https://global-api.nexentgame.com", secure: false, changeOrigin: true
 })
 
 module.exports = {
@@ -15,7 +15,8 @@ module.exports = {
         "@snowpack/plugin-dotenv"
     ],
     devOptions: {
-        port: 4000
+        port: 4000,
+        secure: false,
     },
     buildOptions: {
         metaUrlPath: "snowpack"
